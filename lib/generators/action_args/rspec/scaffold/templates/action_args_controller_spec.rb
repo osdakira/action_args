@@ -1,12 +1,22 @@
 require 'spec_helper'
 
-describe <%= controller_class_name %>Controller do
+<% module_namespacing do -%>
+RSpec.describe <%= controller_class_name %>Controller, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # <%= class_name %>. As you add validations to <%= class_name %>, be sure to
-  # update the return value of this method accordingly.
-  def valid_attributes
-    <%= formatted_hash(example_valid_attributes) %>
-  end
+  # adjust the attributes here as well.
+  let(:valid_attributes) {
+    skip("Add a hash of attributes valid for your model")
+  }
+
+  let(:invalid_attributes) {
+    skip("Add a hash of attributes invalid for your model")
+  }
+
+  # This should return the minimal set of values that should be in the session
+  # in order to pass any filters (e.g. authentication) defined in
+  # <%= controller_class_name %>Controller. Be sure to keep this updated too.
+  let(:valid_session) { {} }
 
 <% unless options[:singleton] -%>
   describe 'GET index' do
@@ -79,7 +89,7 @@ describe <%= controller_class_name %>Controller do
         before do
           <%= class_name %>.any_instance.stub(:save) { false }
           controller.should_receive(:render).with(:action => 'new')
-          controller.create(<%= formatted_hash(example_invalid_attributes) %>)
+          controller.create(invalid_attributes)
         end
         subject { controller.instance_variable_get('@<%= ns_file_name %>') }
         it { should be_a_new(<%= class_name %>) }
@@ -107,7 +117,7 @@ describe <%= controller_class_name %>Controller do
           # Trigger the behavior that occurs when invalid params are submitted
           <%= class_name %>.any_instance.stub(:save) { false }
           controller.should_receive(:render).with(:action => 'edit')
-          controller.update(@<%= file_name %>.to_param, <%= formatted_hash(example_invalid_attributes) %>)
+          controller.update(@<%= file_name %>.to_param, invalid_attributes)
         end
         subject { controller.instance_variable_get('@<%= ns_file_name %>') }
         it { should eq(@<%= file_name %>) }
@@ -128,3 +138,4 @@ describe <%= controller_class_name %>Controller do
     end
   end
 end
+<% end -%>
